@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80" # Assuming your frontend listens on port 80
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000" # Expose port 3000 for backend
+    depends_on:
+      - mongo
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /Users/ericvanlessen/Downloads/github/stubs-app/compose:/app/compose-files
+
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:

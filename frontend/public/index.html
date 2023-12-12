@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integration Testing Environment Setup</title>
+    <style>
+        /* Add basic styling here */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        button {
+            display: inline-block;
+            background: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: #555;
+        }
+ .tab {
+            cursor: pointer;
+            padding: 10px 20px;
+            margin-right: 5px;
+            background-color: #ddd;
+            display: inline-block;
+            border-radius: 5px 5px 0 0;
+        }
+        .active-tab {
+            background-color: #fff;
+            border-bottom: 1px solid #fff;
+        }
+        .tab-content {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 0 5px 5px 5px;
+        }
+        .hidden {
+            display: none;
+        }
+        .button-group {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+
+
+<body>
+    <div class="container">
+
+        <!-- Tabs for switching between sections -->
+        <div id="tabs">
+            <div class="tab active-tab" onclick="showTab('server-config')">Server Configuration</div>
+            <div class="tab" onclick="showTab('bash-script')">Bash Script Execution</div>
+        </div>
+
+        <!-- Server Configuration Section -->
+        <div id="server-config" class="tab-content">
+            <!-- ... existing dropdown and form ... -->
+<div class="container">
+        <h1>Integration Testing Environment Setup</h1>
+    <div class="container">
+
+        <!-- Dropdown for selecting a test server -->
+        <div class="select-box">
+            <label for="test-server-select">Select Test Server:</label>
+            <select id="test-server-select" name="test-server-select">
+                <option value="server1">Docker registry</option>
+                <option value="server2">Test Server 2</option>
+                <option value="server3">Test Server 3</option>
+                <!-- Add more servers as options here -->
+            </select>
+        </div>
+
+        <!-- Button to run the Docker registry script -->
+        <button id="run-docker-registry-script" type="button" style="display: none;">Run Docker Registry Script</button>
+
+        <!-- Log Container -->
+        <div id="log-container" style="background-color: #f2f2f2; margin-top: 20px; padding: 10px; border-radius: 5px; height: 150px; overflow-y: scroll;">
+            <pre id="log-output"></pre>
+        </div>
+
+        <textarea id="docker-compose-input" rows="10">
+            version: '3.8'
+            services:
+              nginx:
+                image: nginx:latest
+                ports:
+                  - "80:80"
+        </textarea>
+        <button onclick="createAndRunCompose()">Create and Run Compose</button>
+
+        <form id="resource-form">
+            <!-- Form fields (similar to previous structure) -->
+            <!-- ... existing form fields ... -->
+        </form>
+
+        <!-- File Editors (similar to previous structure) -->
+        <!-- ... existing file editors ... -->
+    </div>
+        <form id="resource-form">
+            <div class="form-group">
+                <label for="app-server-path">App-Server Path:</label>
+                <input type="text" id="app-server-path" name="app-server-path">
+            </div>
+            <div class="form-group">
+                <label for="dockerfile-path">Dockerfile Path:</label>
+                <input type="text" id="dockerfile-path" name="dockerfile-path">
+            </div>
+            <div class="form-group">
+                <label for="docker-compose-path">Docker Compose File Path:</label>
+                <input type="text" id="docker-compose-path" name="docker-compose-path">
+            </div>
+            <div class="form-group">
+                <label for="bash-script-path">Bash Script Path:</label>
+                <input type="text" id="bash-script-path" name="bash-script-path">
+            </div>
+            <button type="submit">Save Paths</button>
+        </form>
+
+        <!-- Placeholder for Dockerfile and Docker Compose Editors -->
+        <div class="file-editor">
+            <h2>Edit Dockerfile</h2>
+            <textarea id="dockerfile-editor"></textarea>
+        </div>
+        <div class="file-editor">
+            <h2>Edit Docker Compose File</h2>
+            <textarea id="docker-compose-editor"></textarea>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript for handling form submissions and editors goes here
+    </script>
+
+        </div>
+
+	<!-- Bash Script Execution Section -->
+        <div id="bash-script" class="tab-content hidden">
+            <div class="form-group">
+                <label for="bash-script-path">Bash Script Path:</label>
+                <input type="text" id="bash-script-path" name="bash-script-path">
+                <div class="button-group">
+                    <button id="open-bash-script" type="button">Open Bash Script</button>
+                    <button id="save-bash-script" type="button">Save Bash Script</button>
+                </div>
+            </div>
+            <textarea id="bash-script-editor" rows="10" placeholder="Edit bash script here..."></textarea>
+            <button id="run-bash-script" type="button">Run Bash Script</button>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript to handle tab switching
+        function showTab(tabId) {
+            var tabs = document.querySelectorAll('.tab-content');
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].classList.add('hidden');
+            }
+            document.getElementById(tabId).classList.remove('hidden');
+
+            // Update active tab styling
+            var tabButtons = document.querySelectorAll('.tab');
+            for (var i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove('active-tab');
+            }
+            document.querySelector(`[onclick="showTab('${tabId}')"]`).classList.add('active-tab');
+        }
+
+        // JavaScript to handle bash script execution
+        document.getElementById('run-bash-script').addEventListener('click', function() {
+            var bashScriptPath = document.getElementById('bash-script-path').value;
+            // Execute the bash script using the path
+            // This requires server-side handling
+        });
+
+        // JavaScript to handle opening and saving bash scripts
+        document.getElementById('open-bash-script').addEventListener('click', function() {
+            var path = document.getElementById('bash-script-path').value;
+            // Code to load the bash script content from the server
+            // and display it in the textarea
+        });
+
+        document.getElementById('save-bash-script').addEventListener('click', function() {
+            var path = document.getElementById('bash-script-path').value;
+            var content = document.getElementById('bash-script-editor').value;
+            // Code to save the edited content of the bash script back to the server
+        });
+
+        document.getElementById('run-docker-registry-script').addEventListener('click', function() {
+            fetch('http://localhost:3000/run-script', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const logOutput = document.getElementById('log-output');
+                logOutput.textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                const logOutput = document.getElementById('log-output');
+                logOutput.textContent = `Error: ${error}`;
+            });
+        });
+
+         // Function to show or hide the Docker registry script button
+        function toggleDockerRegistryButton() {
+            var selectBox = document.getElementById('test-server-select');
+            var dockerRegistryButton = document.getElementById('run-docker-registry-script');
+
+            // Show the button if 'Docker registry' is selected
+            if (selectBox.value === 'server1') {
+                dockerRegistryButton.style.display = 'block';
+            } else {
+                dockerRegistryButton.style.display = 'none';
+            }
+        }
+
+        // Event listener for the dropdown change
+        document.getElementById('test-server-select').addEventListener('change', toggleDockerRegistryButton);
+
+        // Event listener for the Docker registry script button click
+        document.getElementById('run-docker-registry-script').addEventListener('click', function() {
+            fetch('http://localhost:3000/run-script', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const logOutput = document.getElementById('log-output');
+                logOutput.textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                const logOutput = document.getElementById('log-output');
+                logOutput.textContent = `Error: ${error}`;
+            });
+        });
+
+        // Initially call the function to set the correct state of the button
+        toggleDockerRegistryButton();
+
+        function createAndRunCompose() {
+            const composeContent = document.getElementById('docker-compose-input').value;
+            fetch('/create-and-run-compose', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ composeContent })
+            })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error('Error:', error));
+        }
+
+    </script>
+
+</body>
+</html>
